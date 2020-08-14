@@ -1,0 +1,229 @@
+﻿<Window x:Class="Programmator.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:nlog="clr-namespace:NlogViewer;assembly=NlogViewer"
+        mc:Ignorable="d"
+        Title="Удаленный контроль" Height="550" Width="789.556" WindowStartupLocation="CenterScreen" Loaded="Window_Loaded" Closed="Window_Closed">
+	<Window.TaskbarItemInfo>
+		<TaskbarItemInfo x:Name="taskBarItemInfo"/>
+	</Window.TaskbarItemInfo>
+	<DockPanel>
+		<Menu DockPanel.Dock="Top">
+			<MenuItem Header="_Файл">
+				<MenuItem x:Name="menuItemOpenFile" Header="_Открыть файл" Click="MenuItemOpenFile_Click"  IsEnabled="False">
+					<MenuItem.Icon>
+						<Image Source="{StaticResource OpenFile}" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<Separator/>
+				<MenuItem x:Name="menuItemSaveFileFlash" Header="_Сохранить файл Flash" Click="MenuItemSaveFileFlash_Click"  IsEnabled="False">
+					<MenuItem.Icon>
+						<Image Source="{StaticResource SaveFile}" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem x:Name="menuItemSaveFileEeprom" Header="_Сохранить файл Eeprom" Click="MenuItemSaveFileEeprom_Click"  IsEnabled="False">
+					<MenuItem.Icon>
+						<Image Source="{StaticResource SaveFile}" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<Separator/>
+				<MenuItem x:Name="menuItemExit" Header="_Выход" Click="MenuItemExit_Click">
+					<MenuItem.Icon>
+						<Image Source="{StaticResource Close}" />
+					</MenuItem.Icon>
+				</MenuItem>
+			</MenuItem>
+			<MenuItem Header="_Устройство">
+				<MenuItem x:Name="menuItemConnect" Header="Подключиться" Click="MenuItemConnect_Click">
+					<MenuItem.Icon>
+						<Image Source="{StaticResource Connect}" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem x:Name="menuItemDisconnect" Header="Отключиться" Click="MenuItemDisconnect_Click"  IsEnabled="False">
+					<MenuItem.Icon>
+						<Image Source="{StaticResource Disconnect}" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<Separator/>
+				<MenuItem x:Name="menuItemUserCode" Header="Перейти в основную порграмму" Click="MenuItemUserCode_Click" IsEnabled="False"/>
+				<MenuItem x:Name="menuItemRewriteEeprom" Header="Подготовка к основному коду" Click="MenuItemRewriteEeprom_Click" IsEnabled="False"/>
+				<Separator/>
+				<MenuItem x:Name="menuItemEraseFlash" Header="Очистить FLASH" Click="MenuItemEraseFlash_Click" IsEnabled="False">
+					<MenuItem.Icon>
+						<Image Source="{StaticResource Erase}" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem x:Name="menuItemReadFlash" Header="Прочитать FLASH" Click="MenuItemReadFlash_Click" IsEnabled="False">
+					<MenuItem.Icon>
+						<Image Source="{StaticResource Read}" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem x:Name="menuItemWriteFlash" Header="Записать FLASH" Click="MenuItemWriteFlash_Click" IsEnabled="False">
+					<MenuItem.Icon>
+						<Image Source="{StaticResource Write}" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<Separator/>
+				<MenuItem x:Name="menuItemEraseEeprom" Header="Очистить EEPROM" Click="MenuItemEraseEeprom_Click" IsEnabled="False">
+					<MenuItem.Icon>
+						<Image Source="{StaticResource Erase}" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem x:Name="menuItemReadEeprom" Header="Прочитать EEPROM" Click="MenuItemReadEeprom_Click" IsEnabled="False">
+					<MenuItem.Icon>
+						<Image Source="{StaticResource Read}" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem x:Name="menuItemWriteEeprom" Header="Записать EEPROM" Click="MenuItemWriteEeprom_Click" IsEnabled="False">
+					<MenuItem.Icon>
+						<Image Source="{StaticResource Write}" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<Separator/>
+				<MenuItem x:Name="menuItemSelectRegion" Header="Выбрать область" Click="MenuItemSelectRegion_Click"/>
+				<MenuItem x:Name="menuItemEraseRegion" Header="Очистить область" Click="MenuItemEraseRegion_Click" IsEnabled="False">
+					<MenuItem.Icon>
+						<Image Source="{StaticResource Erase}" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem x:Name="menuItemReadRegion" Header="Прочитать область" Click="MenuItemReadRegion_Click" IsEnabled="False">
+					<MenuItem.Icon>
+						<Image Source="{StaticResource Read}" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem x:Name="menuItemWriteRegion" Header="Записать область" Click="MenuItemWriteRegion_Click" IsEnabled="False">
+					<MenuItem.Icon>
+						<Image Source="{StaticResource Write}" />
+					</MenuItem.Icon>
+				</MenuItem>
+			</MenuItem>
+		</Menu>
+		<ToolBarTray DockPanel.Dock="Top">
+			<ToolBar>
+				<Button x:Name="ButtonRefreshSerial" ToolTip="Обновить последовательные порты" Click="ButtonRefreshSerial_Click">
+					<Image Source="{StaticResource Refresh}" Width="24" Height="24"/>
+				</Button>
+				<Separator/>
+				<ComboBox x:Name="comboBoxSerialPorts" Width="100">
+
+				</ComboBox>
+				<Separator/>
+				<Button ToolTip="Подключиться" Click="MenuItemConnect_Click" IsEnabled="{Binding IsEnabled, ElementName=menuItemConnect}">
+					<Image Source="{StaticResource Connect}" Width="24" Height="24"/>
+				</Button>
+				<Button ToolTip="Отключиться" Click="MenuItemDisconnect_Click" IsEnabled="{Binding IsEnabled, ElementName=menuItemDisconnect}">
+					<Image Source="{StaticResource Disconnect}" Width="24" Height="24"/>
+				</Button>
+			</ToolBar>
+
+			<ToolBar DockPanel.Dock="Top">
+				<Button ToolTip="Открыть файл" Click="MenuItemOpenFile_Click" IsEnabled="{Binding IsEnabled, ElementName=menuItemOpenFile}">
+					<Image Source="{StaticResource OpenFile}" Width="24" Height="24"/>
+				</Button>
+				<Button ToolTip="Сохранить файл Flash" Click="MenuItemSaveFileFlash_Click" IsEnabled="{Binding IsEnabled, ElementName=menuItemSaveFileFlash}">
+					<Image Source="{StaticResource SaveFile}" Width="24" Height="24"/>
+				</Button>
+				<Button ToolTip="Сохранить файл Eeprom" Click="MenuItemSaveFileEeprom_Click" IsEnabled="{Binding IsEnabled, ElementName=menuItemSaveFileEeprom}">
+					<Image Source="{StaticResource SaveFile}" Width="24" Height="24"/>
+				</Button>
+				<Separator/>
+				<Label Content="Flash"/>
+				<Button ToolTip="Очистить Flash" Click="MenuItemEraseFlash_Click"  IsEnabled="{Binding IsEnabled, ElementName=menuItemEraseFlash}">
+					<Image Source="{StaticResource Erase}" Width="24" Height="24"/>
+				</Button>
+				<Button ToolTip="Прочитать Flash" Click="MenuItemReadFlash_Click" IsEnabled="{Binding IsEnabled, ElementName=menuItemReadFlash}">
+					<Image Source="{StaticResource Read}" Width="24" Height="24"/>
+				</Button>
+				<Button ToolTip="Записать Flash" Click="MenuItemWriteFlash_Click" IsEnabled="{Binding IsEnabled, ElementName=menuItemWriteFlash}">
+					<Image Source="{StaticResource Write}" Width="24" Height="24" />
+				</Button>
+				<Separator/>
+				<Label Content="Eeprom"/>
+				<Button ToolTip="Очистить EEPROM" Click="MenuItemEraseEeprom_Click" IsEnabled="{Binding IsEnabled, ElementName=menuItemEraseEeprom}">
+					<Image Source="{StaticResource Erase}" Width="24" Height="24"/>
+				</Button>
+				<Button ToolTip="Прочитать EEPROM" Click="MenuItemReadEeprom_Click" IsEnabled="{Binding IsEnabled, ElementName=menuItemReadEeprom}">
+					<Image Source="{StaticResource Read}" Width="24" Height="24"/>
+				</Button>
+				<Button ToolTip="Записать EEPROM" Click="MenuItemWriteEeprom_Click" IsEnabled="{Binding IsEnabled, ElementName=menuItemWriteEeprom}" >
+					<Image Source="{StaticResource Write}" Width="24" Height="24"/>
+				</Button>
+				<Separator/>
+				<Label Content="Область"/>
+				<Button ToolTip="Очистить Область" Click="MenuItemEraseRegion_Click" IsEnabled="{Binding IsEnabled, ElementName=menuItemEraseRegion}">
+					<Image Source="{StaticResource Erase}" Width="24" Height="24"/>
+				</Button>
+				<Button ToolTip="Прочитать Область" Click="MenuItemReadRegion_Click" IsEnabled="{Binding IsEnabled, ElementName=menuItemReadRegion}">
+					<Image Source="{StaticResource Read}" Width="24" Height="24"/>
+				</Button>
+				<Button ToolTip="Записать Область" Click="MenuItemWriteRegion_Click" IsEnabled="{Binding IsEnabled, ElementName=menuItemWriteRegion}" >
+					<Image Source="{StaticResource Write}" Width="24" Height="24"/>
+				</Button>
+			</ToolBar>
+		</ToolBarTray>
+		<StatusBar DockPanel.Dock="Bottom">
+			<StatusBarItem>
+				<StackPanel Orientation="Horizontal">
+					<TextBlock Text="Размер массива:"/>
+					<TextBlock x:Name="textBlockLength" Text="00000000" Margin="5,0,0,0" Width="70" TextAlignment="Center"/>
+				</StackPanel>
+			</StatusBarItem>
+			<StatusBarItem>
+				<StackPanel Orientation="Horizontal">
+					<TextBlock Text="Отправленные данные"/>
+					<TextBlock x:Name="textBlockSendedData" Text="00000000" Margin="5,0,0,0" Width="70" TextAlignment="Center"/>
+				</StackPanel>
+			</StatusBarItem>
+			<StatusBarItem>
+				<ProgressBar x:Name="progressBarStatus" Width="100" Height="15" Visibility="Hidden" />
+			</StatusBarItem>
+			<StatusBarItem HorizontalAlignment="Right">
+				<Image Source="{StaticResource Disconnect}" Width="16" Height="16" />
+			</StatusBarItem>
+		</StatusBar>
+		<Grid x:Name="LayoutRoot">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*"/>
+				<ColumnDefinition Width="*"/>
+			</Grid.ColumnDefinitions>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="150"/>
+				<RowDefinition Height="*"/>
+			</Grid.RowDefinitions>
+
+
+
+			<Label Content="Тип машины:" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+			<TextBox HorizontalAlignment="Right" Margin="0,14,5,0" VerticalAlignment="Top" Width="75" IsReadOnly="True" TextAlignment="Center" Text="{Binding InfoDevice.Machine}"/>
+
+			<Label Content="Порядковый номер машины:" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top"/>
+			<TextBox HorizontalAlignment="Right" Margin="0,45,5,0" VerticalAlignment="Top" Width="75" IsReadOnly="True" TextAlignment="Center" Text="{Binding InfoDevice.NumberMachine}"/>
+
+			<Label Content="Версия загрузчика:" HorizontalAlignment="Left" Margin="10,72,0,0" VerticalAlignment="Top"/>
+			<TextBox HorizontalAlignment="Right" Margin="0,76,5,0" VerticalAlignment="Top" Width="75" IsReadOnly="True" TextAlignment="Center" Text="{Binding InfoDevice.VersionBootloader}"/>
+
+			<Label Content="Тип контроллера:" HorizontalAlignment="Left" Margin="10,103,0,0" VerticalAlignment="Top"/>
+			<TextBox HorizontalAlignment="Right" Margin="0,107,5,0" VerticalAlignment="Top" Width="75" IsReadOnly="True" TextAlignment="Center" Text="{Binding InfoDevice.TypeCpu}"/>
+
+			<Label Content="Адрес Flash:" HorizontalAlignment="Left" Margin="5,10,0,0" VerticalAlignment="Top" Grid.Column="1"/>
+			<TextBox HorizontalAlignment="Right" Margin="0,14,90,0" VerticalAlignment="Top" Width="75" Grid.Column="1" IsReadOnly="True" TextAlignment="Center" Text="{Binding InfoDevice.AddressUserCodeBegin, StringFormat=\{0:X8\}}"/>
+			<TextBox HorizontalAlignment="Right" Margin="0,14,10,0" VerticalAlignment="Top" Width="75" Grid.Column="1" IsReadOnly="True" TextAlignment="Center" Text="{Binding InfoDevice.AddressUserCodeEnd, StringFormat=\{0:X8\}}"/>
+
+			<Label Content="Адрес Eeprom:" HorizontalAlignment="Left" Margin="5,41,0,0" VerticalAlignment="Top" Grid.Column="1"/>
+			<TextBox HorizontalAlignment="Right" Margin="0,45,90,0" VerticalAlignment="Top" Width="75" Grid.Column="1" IsReadOnly="True" TextAlignment="Center" Text="{Binding InfoDevice.AddressEepromBegin, StringFormat=\{0:X8\}}"/>
+			<TextBox HorizontalAlignment="Right" Margin="0,45,10,0" VerticalAlignment="Top" Width="75" Grid.Column="1" IsReadOnly="True" TextAlignment="Center" Text="{Binding InfoDevice.AddressEepromEnd, StringFormat=\{0:X8\}}"/>
+
+			<Label Content="Размер страницы:" HorizontalAlignment="Left" Margin="5,72,0,0" VerticalAlignment="Top" Grid.Column="1"/>
+			<TextBox x:Name="textBoxPageSize" HorizontalAlignment="Right" Margin="0,76,10,0" VerticalAlignment="Top" Width="75" Grid.Column="1" TextAlignment="Center" Text="{Binding PageSize, StringFormat=\{0:D\}}"/>
+
+			<Button x:Name="buttonRefresh" HorizontalAlignment="Right" Margin="0,0,10,5" VerticalAlignment="Bottom" Width="75" Grid.Column="1" Content="Обновить"/>
+
+
+			<!--<TextBox x:Name="textBoxStatus" Margin="5" TextWrapping="Wrap" Grid.Row="1" Grid.ColumnSpan="2" IsReadOnly="True" VerticalScrollBarVisibility="Auto"/>-->
+			<nlog:NlogViewer x:Name="logCtrl" Grid.Row="1" Grid.ColumnSpan="2" Margin="5"/>
+			
+		</Grid>
+	</DockPanel>
+</Window>

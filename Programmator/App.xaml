@@ -1,0 +1,15 @@
+﻿<Application x:Class="Programmator.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Programmator"
+             StartupUri="MainWindow.xaml">
+	<Application.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="/Programmator;component/Images/VectorImages.xaml" />
+				<!--<ResourceDictionary Source="/Programmator;component/Themes/Simple Styles.xaml" />
+				<ResourceDictionary Source="/Programmator;component/Themes/Theme.xaml" />-->
+			</ResourceDictionary.MergedDictionaries>
+		</ResourceDictionary>
+	</Application.Resources>
+</Application>
