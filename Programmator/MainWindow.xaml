@@ -222,7 +222,7 @@
 
 
 			<!--<TextBox x:Name="textBoxStatus" Margin="5" TextWrapping="Wrap" Grid.Row="1" Grid.ColumnSpan="2" IsReadOnly="True" VerticalScrollBarVisibility="Auto"/>-->
-			<nlog:NlogViewer x:Name="logCtrl" Grid.Row="1" Grid.ColumnSpan="2" Margin="5"/>
+			<nlog:NlogViewer x:Name="logCtrl" Grid.Row="1" Grid.ColumnSpan="2" Margin="5" MessageWidth="300" LevelWidth="0" LoggerNameWidth="0" ExceptionWidth="200"/>
 			
 		</Grid>
 	</DockPanel>
