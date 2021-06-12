@@ -39,6 +39,10 @@ namespace Programmator.Communicate
 			KHT_45 = 45,
 			[Description("КНТ-46")]
 			KHT_46 = 46,
+			[Description("КСН")]
+			KCH = 50,
+			[Description("КТ-2П")]
+			KT_2P = 51,
 			[Description("КТ1М")]
 			KT1M = 60,
 			[Description("КТ1М-01")]
