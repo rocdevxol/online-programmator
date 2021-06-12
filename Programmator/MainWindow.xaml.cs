@@ -244,34 +244,39 @@ namespace Programmator
 
 		private void MenuItemConnect_Click(object sender, RoutedEventArgs e)
 		{
-			Messages.SetFunction(Enums.FunctionalMode.VersionSoftware);
-			Communication = new SerialPortCommunication(Messages, serialNames[comboBoxSerialPorts.SelectedIndex]);
-			Communication?.Start();
+			try
+			{
+				Messages.SetFunction(Enums.FunctionalMode.VersionSoftware);
+				Communication = new SerialPortCommunication(Messages, serialNames[comboBoxSerialPorts.SelectedIndex]);
+				Communication?.Start();
 
-			menuItemDisconnect.IsEnabled = true;
-			menuItemConnect.IsEnabled = false;
-			menuItemUserCode.IsEnabled = true;
-			menuItemRewriteEeprom.IsEnabled = true;
-			menuItemEraseFlash.IsEnabled = true;
-			menuItemReadFlash.IsEnabled = true;
-			menuItemEraseEeprom.IsEnabled = true;
-			menuItemReadEeprom.IsEnabled = true;
-			menuItemEraseRegion.IsEnabled = true;
-			menuItemReadRegion.IsEnabled = true;
-			menuItemOpenFile.IsEnabled = true;
+				menuItemDisconnect.IsEnabled = true;
+				menuItemConnect.IsEnabled = false;
+				menuItemUserCode.IsEnabled = true;
+				menuItemRewriteEeprom.IsEnabled = true;
+				menuItemEraseFlash.IsEnabled = true;
+				menuItemReadFlash.IsEnabled = true;
+				menuItemEraseEeprom.IsEnabled = true;
+				menuItemReadEeprom.IsEnabled = true;
+				menuItemEraseRegion.IsEnabled = true;
+				menuItemReadRegion.IsEnabled = true;
+				menuItemOpenFile.IsEnabled = true;
 
-			menuItemWriteFlash.IsEnabled = false;
-			menuItemWriteRegion.IsEnabled = false;
-			menuItemWriteEeprom.IsEnabled = false;
+				menuItemWriteFlash.IsEnabled = false;
+				menuItemWriteRegion.IsEnabled = false;
+				menuItemWriteEeprom.IsEnabled = false;
 
+				if (Device.DataToWrite == null) return;
+				if (Device.DataToWrite.Count == 0) return;
 
-			if (Device.DataToWrite == null) return;
-			if (Device.DataToWrite.Count == 0) return;
-
-			menuItemWriteFlash.IsEnabled = true;
-			menuItemWriteRegion.IsEnabled = true;
-			menuItemWriteEeprom.IsEnabled = true;
-
+				menuItemWriteFlash.IsEnabled = true;
+				menuItemWriteRegion.IsEnabled = true;
+				menuItemWriteEeprom.IsEnabled = true;
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show(ex.Message, this.Title, MessageBoxButton.OK, MessageBoxImage.Error);
+			}
 
 		}
 
