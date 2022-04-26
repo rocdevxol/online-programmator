@@ -14,88 +14,88 @@
 			<MenuItem Header="_Файл">
 				<MenuItem x:Name="menuItemOpenFile" Header="_Открыть файл" Click="MenuItemOpenFile_Click"  IsEnabled="False">
 					<MenuItem.Icon>
-						<Image Source="{StaticResource OpenFile}" />
+						<Image Source="{StaticResource OpenFile}" Width="16" Height="16"/>
 					</MenuItem.Icon>
 				</MenuItem>
 				<Separator/>
 				<MenuItem x:Name="menuItemSaveFileFlash" Header="_Сохранить файл Flash" Click="MenuItemSaveFileFlash_Click"  IsEnabled="False">
 					<MenuItem.Icon>
-						<Image Source="{StaticResource SaveFile}" />
+						<Image Source="{StaticResource SaveFile}" Width="16" Height="16"/>
 					</MenuItem.Icon>
 				</MenuItem>
 				<MenuItem x:Name="menuItemSaveFileEeprom" Header="_Сохранить файл Eeprom" Click="MenuItemSaveFileEeprom_Click"  IsEnabled="False">
 					<MenuItem.Icon>
-						<Image Source="{StaticResource SaveFile}" />
+						<Image Source="{StaticResource SaveFile}" Width="16" Height="16"/>
 					</MenuItem.Icon>
 				</MenuItem>
 				<Separator/>
 				<MenuItem x:Name="menuItemExit" Header="_Выход" Click="MenuItemExit_Click">
 					<MenuItem.Icon>
-						<Image Source="{StaticResource Close}" />
+						<Image Source="{StaticResource Close}" Width="16" Height="16"/>
 					</MenuItem.Icon>
 				</MenuItem>
 			</MenuItem>
 			<MenuItem Header="_Устройство">
 				<MenuItem x:Name="menuItemConnect" Header="Подключиться" Click="MenuItemConnect_Click">
 					<MenuItem.Icon>
-						<Image Source="{StaticResource Connect}" />
+						<Image Source="{StaticResource Connect}" Width="16" Height="16"/>
 					</MenuItem.Icon>
 				</MenuItem>
 				<MenuItem x:Name="menuItemDisconnect" Header="Отключиться" Click="MenuItemDisconnect_Click"  IsEnabled="False">
 					<MenuItem.Icon>
-						<Image Source="{StaticResource Disconnect}" />
+						<Image Source="{StaticResource Disconnect}" Width="16" Height="16"/>
 					</MenuItem.Icon>
 				</MenuItem>
 				<Separator/>
-				<MenuItem x:Name="menuItemUserCode" Header="Перейти в основную порграмму" Click="MenuItemUserCode_Click" IsEnabled="False"/>
-				<MenuItem x:Name="menuItemRewriteEeprom" Header="Подготовка к основному коду" Click="MenuItemRewriteEeprom_Click" IsEnabled="False"/>
+				<MenuItem x:Name="menuItemUserCode" Header="Перезапуск устройства" Click="MenuItemUserCode_Click" IsEnabled="False"/>
+				<MenuItem x:Name="menuItemRewriteEeprom" Header="Обновление EEPROM" Click="MenuItemRewriteEeprom_Click" IsEnabled="False"/>
 				<Separator/>
 				<MenuItem x:Name="menuItemEraseFlash" Header="Очистить FLASH" Click="MenuItemEraseFlash_Click" IsEnabled="False">
 					<MenuItem.Icon>
-						<Image Source="{StaticResource Erase}" />
+						<Image Source="{StaticResource Erase}" Width="16" Height="16"/>
 					</MenuItem.Icon>
 				</MenuItem>
 				<MenuItem x:Name="menuItemReadFlash" Header="Прочитать FLASH" Click="MenuItemReadFlash_Click" IsEnabled="False">
 					<MenuItem.Icon>
-						<Image Source="{StaticResource Read}" />
+						<Image Source="{StaticResource Read}" Width="16" Height="16"/>
 					</MenuItem.Icon>
 				</MenuItem>
 				<MenuItem x:Name="menuItemWriteFlash" Header="Записать FLASH" Click="MenuItemWriteFlash_Click" IsEnabled="False">
 					<MenuItem.Icon>
-						<Image Source="{StaticResource Write}" />
+						<Image Source="{StaticResource Write}" Width="16" Height="16"/>
 					</MenuItem.Icon>
 				</MenuItem>
 				<Separator/>
 				<MenuItem x:Name="menuItemEraseEeprom" Header="Очистить EEPROM" Click="MenuItemEraseEeprom_Click" IsEnabled="False">
 					<MenuItem.Icon>
-						<Image Source="{StaticResource Erase}" />
+						<Image Source="{StaticResource Erase}" Width="16" Height="16"/>
 					</MenuItem.Icon>
 				</MenuItem>
 				<MenuItem x:Name="menuItemReadEeprom" Header="Прочитать EEPROM" Click="MenuItemReadEeprom_Click" IsEnabled="False">
 					<MenuItem.Icon>
-						<Image Source="{StaticResource Read}" />
+						<Image Source="{StaticResource Read}" Width="16" Height="16"/>
 					</MenuItem.Icon>
 				</MenuItem>
 				<MenuItem x:Name="menuItemWriteEeprom" Header="Записать EEPROM" Click="MenuItemWriteEeprom_Click" IsEnabled="False">
 					<MenuItem.Icon>
-						<Image Source="{StaticResource Write}" />
+						<Image Source="{StaticResource Write}" Width="16" Height="16"/>
 					</MenuItem.Icon>
 				</MenuItem>
 				<Separator/>
 				<MenuItem x:Name="menuItemSelectRegion" Header="Выбрать область" Click="MenuItemSelectRegion_Click"/>
 				<MenuItem x:Name="menuItemEraseRegion" Header="Очистить область" Click="MenuItemEraseRegion_Click" IsEnabled="False">
 					<MenuItem.Icon>
-						<Image Source="{StaticResource Erase}" />
+						<Image Source="{StaticResource Erase}" Width="16" Height="16"/>
 					</MenuItem.Icon>
 				</MenuItem>
 				<MenuItem x:Name="menuItemReadRegion" Header="Прочитать область" Click="MenuItemReadRegion_Click" IsEnabled="False">
 					<MenuItem.Icon>
-						<Image Source="{StaticResource Read}" />
+						<Image Source="{StaticResource Read}" Width="16" Height="16"/>
 					</MenuItem.Icon>
 				</MenuItem>
 				<MenuItem x:Name="menuItemWriteRegion" Header="Записать область" Click="MenuItemWriteRegion_Click" IsEnabled="False">
 					<MenuItem.Icon>
-						<Image Source="{StaticResource Write}" />
+						<Image Source="{StaticResource Write}" Width="16" Height="16"/>
 					</MenuItem.Icon>
 				</MenuItem>
 			</MenuItem>

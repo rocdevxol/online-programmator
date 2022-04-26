@@ -97,6 +97,13 @@ namespace Programmator.Communicate
 							task = 2;
 						command = Enums.Commands.ReadFlash;
                         break;
+					case Enums.FunctionalMode.UpdateEeprom:
+						command = Enums.Commands.FinishProgramFlash;
+						break;
+					case Enums.FunctionalMode.RebootDevice:
+						command = Enums.Commands.RebootDevice;
+						break;
+
                 }
 
 //				if (command == Enums.Commands.ZeroCommand)
@@ -123,11 +130,11 @@ namespace Programmator.Communicate
                         array = prepareProgramVerifyFlash(task);
                         break;
                     case Enums.Commands.FinishProgramFlash:
-                        array = null;
-                        break;
+						array = prepareFinishProgramFlash();
+						break;
                     case Enums.Commands.RebootDevice:
-                        array = null;
-                        break;
+						array = prepareRebootDevice();
+						break;
                 }
 
             }
@@ -270,6 +277,40 @@ namespace Programmator.Communicate
 			return array;
 		}
 
+		private byte[] prepareFinishProgramFlash()
+		{
+			Structures.FlashResult buffer = new Structures.FlashResult();
+
+			buffer.ToNetAddress = NetAddressDevice;
+			buffer.FromNetAddress = NetAddressPc;
+			buffer.LengthMessage = StructConvert.LengthStruct(buffer);
+			buffer.Command = Enums.Commands.FinishProgramFlash;
+
+			buffer.Task = 0;
+			buffer.Status = 0;
+
+			buffer.Crc = CalculateCrc.CreateCRC(buffer);
+			byte[] array = StructConvert.StructureToByteArray(buffer);
+			return array;
+		}
+
+		private byte[] prepareRebootDevice()
+		{
+			Structures.FlashResult buffer = new Structures.FlashResult();
+
+			buffer.ToNetAddress = NetAddressDevice;
+			buffer.FromNetAddress = NetAddressPc;
+			buffer.LengthMessage = StructConvert.LengthStruct(buffer);
+			buffer.Command = Enums.Commands.RebootDevice;
+
+			buffer.Task = 0;
+			buffer.Status = 0;
+
+			buffer.Crc = CalculateCrc.CreateCRC(buffer);
+			byte[] array = StructConvert.StructureToByteArray(buffer);
+			return array;
+		}
+
 		#endregion
 
 
@@ -317,6 +358,12 @@ namespace Programmator.Communicate
 						break;
 					case Enums.Commands.ReadFlash:
 						readReadFlash(array);
+						break;
+					case Enums.Commands.FinishProgramFlash:
+						readFinishProgramFlash(array);
+						break;
+					case Enums.Commands.RebootDevice:
+						readRebootDevice(array);
 						break;
 				}
 			}
@@ -474,6 +521,44 @@ namespace Programmator.Communicate
 			if (buffer.LengthData != 0)
 				Device.StatusProgress = Enums.StatusProgress.Inderterminate;
 
+			if (TaskToProcess == 1) TaskToProcess = 0;
+		}
+
+		private void readFinishProgramFlash(byte[] array)
+		{
+			Structures.FlashResult buffer = new Structures.FlashResult();
+			object obj = new Structures.FlashResult();
+			StructConvert.ByteArrayToStructure(array, ref obj);
+			buffer = (Structures.FlashResult)obj;
+
+			Enums.Status status = (Enums.Status)buffer.Status;
+			if (status == Enums.Status.OK)
+			{
+				MainWindow.Logger.Info("Операция завершена");
+				commandOut = Enums.Commands.ZeroCommand;
+				Device.StatusProgress = Enums.StatusProgress.Alarm;
+				Function = Enums.FunctionalMode.Disable;
+			}
+			//Device.AddressOffset += Device.LengthSend; // TODO uncomment
+			if (TaskToProcess == 1) TaskToProcess = 0;
+		}
+
+		private void readRebootDevice(byte[] array)
+		{
+			Structures.FlashResult buffer = new Structures.FlashResult();
+			object obj = new Structures.FlashResult();
+			StructConvert.ByteArrayToStructure(array, ref obj);
+			buffer = (Structures.FlashResult)obj;
+
+			Enums.Status status = (Enums.Status)buffer.Status;
+			if (status == Enums.Status.OK)
+			{
+				MainWindow.Logger.Info("Операция завершена");
+				commandOut = Enums.Commands.ZeroCommand;
+				Device.StatusProgress = Enums.StatusProgress.Alarm;
+				Function = Enums.FunctionalMode.Disable;
+			}
+			//Device.AddressOffset += Device.LengthSend; // TODO uncomment
 			if (TaskToProcess == 1) TaskToProcess = 0;
 		}
 

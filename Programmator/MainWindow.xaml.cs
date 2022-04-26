@@ -303,7 +303,8 @@ namespace Programmator
 
 		private void MenuItemUserCode_Click(object sender, RoutedEventArgs e)
 		{
-
+			Logger.Trace("Перезагрузка системы");
+			Messages.SetFunction(Enums.FunctionalMode.RebootDevice);
 		}
 
 		private void MenuItemRewriteEeprom_Click(object sender, RoutedEventArgs e)
