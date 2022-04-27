@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:nlog="clr-namespace:NlogViewer;assembly=NlogViewer"
         mc:Ignorable="d"
-        Title="Удаленный контроль" Height="550" Width="789.556" WindowStartupLocation="CenterScreen" Loaded="Window_Loaded" Closed="Window_Closed">
+        Title="Удаленный контроль" Height="550" Width="790" WindowStartupLocation="CenterScreen" Loaded="Window_Loaded" Closed="Window_Closed">
 	<Window.TaskbarItemInfo>
 		<TaskbarItemInfo x:Name="taskBarItemInfo"/>
 	</Window.TaskbarItemInfo>
@@ -18,12 +18,12 @@
 					</MenuItem.Icon>
 				</MenuItem>
 				<Separator/>
-				<MenuItem x:Name="menuItemSaveFileFlash" Header="_Сохранить файл Flash" Click="MenuItemSaveFileFlash_Click"  IsEnabled="False">
+				<MenuItem x:Name="menuItemSaveFileFlash" Header="_Сохранить файл Flash" Click="MenuItemSaveFileFlash_Click" IsEnabled="False">
 					<MenuItem.Icon>
 						<Image Source="{StaticResource SaveFile}" Width="16" Height="16"/>
 					</MenuItem.Icon>
 				</MenuItem>
-				<MenuItem x:Name="menuItemSaveFileEeprom" Header="_Сохранить файл Eeprom" Click="MenuItemSaveFileEeprom_Click"  IsEnabled="False">
+				<MenuItem x:Name="menuItemSaveFileEeprom" Header="_Сохранить файл Eeprom" Click="MenuItemSaveFileEeprom_Click" IsEnabled="False">
 					<MenuItem.Icon>
 						<Image Source="{StaticResource SaveFile}" Width="16" Height="16"/>
 					</MenuItem.Icon>

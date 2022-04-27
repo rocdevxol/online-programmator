@@ -480,7 +480,7 @@ namespace Programmator.Communicate
 				if (buffer.LengthData == 0) // Чтение завершено
 				{
 					MainWindow.Logger.Trace("Чтение EEPROM завершено");
-					Device.StatusProgress = Enums.StatusProgress.Finish;
+					Device.StatusProgress = Enums.StatusProgress.FinishReadEeprom;
 					Function = Enums.FunctionalMode.Disable;
 				}
 
@@ -499,7 +499,7 @@ namespace Programmator.Communicate
 				if (buffer.LengthData == 0) // Чтение завершено
 				{
 					MainWindow.Logger.Trace("Чтение Flash завершено");
-					Device.StatusProgress = Enums.StatusProgress.Finish;
+					Device.StatusProgress = Enums.StatusProgress.FinishReadFlash;
 					Function = Enums.FunctionalMode.Disable;
 				}
 			}
@@ -513,7 +513,7 @@ namespace Programmator.Communicate
 				if (buffer.LengthData == 0) // Чтение завершено
 				{
 					MainWindow.Logger.Trace("Чтение области завершено");
-					Device.StatusProgress = Enums.StatusProgress.Finish;
+					Device.StatusProgress = Enums.StatusProgress.FinishReadRegion;
 					Function = Enums.FunctionalMode.Disable;
 				}
 			}

@@ -98,7 +98,15 @@ namespace Programmator.Communicate
 			Work,
 			Alarm,
 			Finish,
-			Inderterminate
+			Inderterminate,
+
+			FinishReadEeprom,
+			FinishReadFlash,
+			FinishReadRegion,
+
+			FinishWriteFlash,
+			FinishWriteEeprom,
+			FinishWriteRegion,
 		}
 
         /// <summary>

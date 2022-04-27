@@ -5,12 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Programmator"
         mc:Ignorable="d"
-        Title="Выбор области памяти" Height="150" Width="300" Loaded="Window_Loaded">
+        Title="Выбор области памяти" Height="130" Width="300" Loaded="Window_Loaded">
 	<Grid x:Name="LayoutRoot">
-		<Label Content="Стартовый адрес" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
-		<TextBox x:Name="textBoxBeginAddress" HorizontalAlignment="Left" Margin="122,14,0,0" VerticalAlignment="Top" Width="75"/>
-		<Label Content="Финишный адрес" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top"/>
-		<TextBox x:Name="textBoxEndAddress" HorizontalAlignment="Left" Margin="122,45,0,0" VerticalAlignment="Top" Width="75"/>
+		<Label Content="Стартовый адрес" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontSize="16"/>
+		<TextBox x:Name="textBoxBeginAddress" HorizontalAlignment="Left" Margin="154,13,0,0" VerticalAlignment="Top" Width="100" FontSize="18"/>
+		<Label Content="Финишный адрес" HorizontalAlignment="Left" Margin="10,46,0,0" VerticalAlignment="Top" FontSize="16"/>
+		<TextBox x:Name="textBoxEndAddress" HorizontalAlignment="Left" Margin="154,49,0,0" VerticalAlignment="Top" Width="100" FontSize="18"/>
 		<StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,10">
 			<Button x:Name="buttonOk" Content="OK" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Click="buttonOk_Click" />
 			<Button x:Name="buttonCancel" Content="Отмена" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="5,0,0,0" Click="buttonCancel_Click"/>

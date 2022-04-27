@@ -9,17 +9,8 @@ using System.IO;
 using System.IO.Ports;
 using System.Linq;
 using System.Management;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
 
 namespace Programmator
@@ -30,7 +21,7 @@ namespace Programmator
 	public partial class MainWindow : Window
 	{
 		public static Logger Logger;
-		private MemoryTarget target;
+		private readonly MemoryTarget target;
 		private DispatcherTimer timer;
 
 		public static Device Device { get; set; }
@@ -39,6 +30,8 @@ namespace Programmator
 
 		private string[] serialNames;
 		private List<string> tList;
+
+		private Region region;
 
 		private bool update;
 
@@ -59,10 +52,14 @@ namespace Programmator
 			Device.PropertyChanged += Device_PropertyChanged;
 			LayoutRoot.DataContext = Device;
 
+			region = new Region();
+
 			SearchComPort();
 
-			timer = new DispatcherTimer();
-			timer.Interval = new TimeSpan(2500000); // 100ms
+			timer = new DispatcherTimer
+			{
+				Interval = new TimeSpan(2500000) // 100ms
+			};
 			timer.Tick += Timer_Tick;
 			timer.Start();
 		}
@@ -83,36 +80,60 @@ namespace Programmator
 		{
 			switch (Device.StatusProgress)
 			{
-				case Communicate.Enums.StatusProgress.Disable:
+				case Enums.StatusProgress.Disable:
 					progressBarStatus.Visibility = Visibility.Hidden;
 					progressBarStatus.IsIndeterminate = false;
 					progressBarStatus.Foreground = new SolidColorBrush(Color.FromArgb(255, 6, 176, 37));
 					taskBarItemInfo.ProgressState = System.Windows.Shell.TaskbarItemProgressState.None;
 					break;
-				case Communicate.Enums.StatusProgress.Finish:
+				case Enums.StatusProgress.Finish:
 					progressBarStatus.Visibility = Visibility.Hidden;
 					progressBarStatus.IsIndeterminate = false;
 					progressBarStatus.Foreground = new SolidColorBrush(Color.FromArgb(255, 6, 176, 37));
 					taskBarItemInfo.ProgressState = System.Windows.Shell.TaskbarItemProgressState.None;
 					break;
-				case Communicate.Enums.StatusProgress.Alarm:
+				case Enums.StatusProgress.Alarm:
 					progressBarStatus.Visibility = Visibility.Visible;
 					progressBarStatus.IsIndeterminate = false;
 					progressBarStatus.Foreground = new SolidColorBrush(Color.FromArgb(255, 220, 60, 20));
 					taskBarItemInfo.ProgressState = System.Windows.Shell.TaskbarItemProgressState.Error;
 					break;
-				case Communicate.Enums.StatusProgress.Inderterminate:
+				case Enums.StatusProgress.Inderterminate:
 					progressBarStatus.Visibility = Visibility.Visible;
 					progressBarStatus.IsIndeterminate = true;
 					progressBarStatus.Foreground = new SolidColorBrush(Color.FromArgb(255, 6, 176, 37));
 					taskBarItemInfo.ProgressState = System.Windows.Shell.TaskbarItemProgressState.Indeterminate;
 					break;
-				case Communicate.Enums.StatusProgress.Work:
+				case Enums.StatusProgress.Work:
 					progressBarStatus.Visibility = Visibility.Visible;
 					progressBarStatus.IsIndeterminate = false;
 					progressBarStatus.Foreground = new SolidColorBrush(Color.FromArgb(255, 6, 176, 37));
 					taskBarItemInfo.ProgressState = System.Windows.Shell.TaskbarItemProgressState.Normal;
 					break;
+				case Enums.StatusProgress.FinishReadEeprom:
+					textBlockLength.Text = Device.EepromData.Count.ToString("X8");
+					Device.StatusProgress = Enums.StatusProgress.Finish;
+					menuItemSaveFileEeprom.IsEnabled = true;
+					break;
+				case Enums.StatusProgress.FinishReadFlash:
+					textBlockLength.Text = Device.FlashData.Count.ToString("X8");
+					Device.StatusProgress = Enums.StatusProgress.Finish;
+					menuItemSaveFileFlash.IsEnabled = true;
+					break;
+				case Enums.StatusProgress.FinishReadRegion:
+					textBlockLength.Text = Device.RegionData.Count.ToString("X8");
+					Device.StatusProgress = Enums.StatusProgress.Finish;
+					break;
+				case Enums.StatusProgress.FinishWriteEeprom:
+					Device.StatusProgress = Enums.StatusProgress.Finish;
+					break;
+				case Enums.StatusProgress.FinishWriteFlash:
+					Device.StatusProgress = Enums.StatusProgress.Finish;
+					break;
+				case Enums.StatusProgress.FinishWriteRegion:
+					Device.StatusProgress = Enums.StatusProgress.Finish;
+					break;
+
 			}
 
 			switch (Messages?.GetFunction())
@@ -130,7 +151,7 @@ namespace Programmator
 				case Enums.FunctionalMode.ProgramRegion:
 					textBlockSendedData.Text = Device.AddressOffset.ToString("X8");
 
-					double percent = (double)Device.AddressOffset * 100.0 / (double)Device.DataToWrite.Count;
+					double percent = Device.AddressOffset * 100.0 / Device.DataToWrite.Count;
 					progressBarStatus.Value = percent;
 					taskBarItemInfo.ProgressValue = percent / 100;
 					break;
@@ -159,15 +180,20 @@ namespace Programmator
 
 		private void MenuItemOpenFile_Click(object sender, RoutedEventArgs e)
 		{
-			OpenFileDialog ofd = new OpenFileDialog();
-			ofd.Filter = "Бинарные файлы|*.bin*";
-			Boolean? res = ofd.ShowDialog();
-			if (res != true) return;
+			OpenFileDialog ofd = new OpenFileDialog
+			{
+				Filter = "Бинарные файлы|*.bin*"
+			};
+			bool? res = ofd.ShowDialog();
+			if (res != true)
+			{
+				return;
+			}
 
 			FileStream stream = new FileStream(ofd.FileName, FileMode.Open, FileAccess.Read);
 			int leng = (int)stream.Length;
 			byte[] buffer = new byte[stream.Length];
-			stream.Read(buffer, 0, leng);
+			_ = stream.Read(buffer, 0, leng);
 			stream.Close();
 			Device.DataToWrite = buffer.ToList();
 
@@ -190,18 +216,20 @@ namespace Programmator
 		{
 			if (Device.FlashData == null || Device.FlashData.Count == 0)
 			{
-				MessageBox.Show("Данные остутсвуют, произведите считывание данных с системы", this.Title, MessageBoxButton.OK, MessageBoxImage.Error);
+				_ = MessageBox.Show("Данные остутсвуют, произведите считывание данных с системы", Title, MessageBoxButton.OK, MessageBoxImage.Error);
 				return;
 			}
-			SaveFileDialog sfd = new SaveFileDialog();
-			sfd.Filter = "Бинарные файлы|*.bin";
-			String name = String.Empty;
-
-			name = String.Format("flash_{0}.bin", Device.InfoDevice.NumberMachine);
-
+			SaveFileDialog sfd = new SaveFileDialog
+			{
+				Filter = "Бинарные файлы|*.bin"
+			};
+			string name = string.Format("flash_{0}.bin", Device.InfoDevice.NumberMachine);
 			sfd.FileName = name;
-			Boolean? res = sfd.ShowDialog();
-			if (res != true) return;
+			bool? res = sfd.ShowDialog();
+			if (res != true)
+			{
+				return;
+			}
 
 			FileStream stream = new FileStream(sfd.FileName, FileMode.CreateNew, FileAccess.ReadWrite);
 			int leng = Device.FlashData.Count;
@@ -215,18 +243,20 @@ namespace Programmator
 		{
 			if (Device.EepromData == null || Device.EepromData.Count == 0)
 			{
-				MessageBox.Show("Данные остутсвуют, произведите считывание данных с системы", this.Title, MessageBoxButton.OK, MessageBoxImage.Error);
+				_ = MessageBox.Show("Данные остутсвуют, произведите считывание данных с системы", Title, MessageBoxButton.OK, MessageBoxImage.Error);
 				return;
 			}
-			SaveFileDialog sfd = new SaveFileDialog();
-			sfd.Filter = "Бинарные файлы|*.bin";
-			String name = String.Empty;
-
-			name = String.Format("eeprom_{0}.bin", Device.InfoDevice.NumberMachine);
-
+			SaveFileDialog sfd = new SaveFileDialog
+			{
+				Filter = "Бинарные файлы|*.bin"
+			};
+			string name = string.Format("eeprom_{0}.bin", Device.InfoDevice.NumberMachine);
 			sfd.FileName = name;
-			Boolean? res = sfd.ShowDialog();
-			if (res != true) return;
+			bool? res = sfd.ShowDialog();
+			if (res != true)
+			{
+				return;
+			}
 
 			FileStream stream = new FileStream(sfd.FileName, FileMode.CreateNew, FileAccess.ReadWrite);
 			int leng = Device.EepromData.Count;
@@ -239,7 +269,7 @@ namespace Programmator
 
 		private void MenuItemExit_Click(object sender, RoutedEventArgs e)
 		{
-			this.Close();
+			Close();
 		}
 
 		private void MenuItemConnect_Click(object sender, RoutedEventArgs e)
@@ -266,8 +296,15 @@ namespace Programmator
 				menuItemWriteRegion.IsEnabled = false;
 				menuItemWriteEeprom.IsEnabled = false;
 
-				if (Device.DataToWrite == null) return;
-				if (Device.DataToWrite.Count == 0) return;
+				if (Device.DataToWrite == null)
+				{
+					return;
+				}
+
+				if (Device.DataToWrite.Count == 0)
+				{
+					return;
+				}
 
 				menuItemWriteFlash.IsEnabled = true;
 				menuItemWriteRegion.IsEnabled = true;
@@ -275,7 +312,7 @@ namespace Programmator
 			}
 			catch (Exception ex)
 			{
-				MessageBox.Show(ex.Message, this.Title, MessageBoxButton.OK, MessageBoxImage.Error);
+				_ = MessageBox.Show(ex.Message, Title, MessageBoxButton.OK, MessageBoxImage.Error);
 			}
 
 		}
@@ -365,31 +402,29 @@ namespace Programmator
 
 		private void MenuItemEraseRegion_Click(object sender, RoutedEventArgs e)
 		{
+			Device.AddressBegin = Device.Region.BeginAddress;
+			Device.AddressEnd = Device.Region.EndAddress;
 
-
-
-
-			Logger.Trace("Очистка Области");
+			Logger.Trace($"Очистка области от {Device.Region.BeginAddress:X8} до {Device.Region.EndAddress:X8}");
 			Messages.SetFunction(Enums.FunctionalMode.EraseRegion);
-			//task = new Object[] { device.AddressUserCode, device.AddressEeprom, 0 };
 		}
 
 		private void MenuItemReadRegion_Click(object sender, RoutedEventArgs e)
 		{
-
+			Device.AddressBegin = Device.Region.BeginAddress;
+			Device.AddressEnd = Device.Region.EndAddress;
 
 			Device.RegionData.Clear();
-			Logger.Trace("Чтение Области");
+			Logger.Trace($"Чтение области от {Device.Region.BeginAddress:X8} до {Device.Region.EndAddress:X8}");
 			Messages.SetFunction(Enums.FunctionalMode.ReadRegion);
 		}
 
 		private void MenuItemWriteRegion_Click(object sender, RoutedEventArgs e)
 		{
-			Device.AddressBegin = Device.InfoDevice.AddressEepromBegin;
-			Device.AddressOffset = 0;
-			Device.LengthSend = 0;
+			Device.AddressBegin = Device.Region.BeginAddress;
+			Device.AddressEnd = Device.Region.EndAddress;
 
-			Logger.Trace("Запись Области");
+			Logger.Trace($"Запись области от {Device.Region.BeginAddress:X8} до {Device.Region.EndAddress:X8}");
 			Messages.SetFunction(Enums.FunctionalMode.ProgramRegion);
 		}
 
@@ -403,10 +438,10 @@ namespace Programmator
 		/// </summary>
 		private void SearchComPort()
 		{
-			using (var searcher = new ManagementObjectSearcher("SELECT * FROM WIN32_SerialPort"))
+			using (ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT * FROM WIN32_SerialPort"))
 			{
 				serialNames = SerialPort.GetPortNames();
-				var ports = searcher.Get().Cast<ManagementBaseObject>().ToList();
+				List<ManagementBaseObject> ports = searcher.Get().Cast<ManagementBaseObject>().ToList();
 				tList = (from n in serialNames
 						 join p in ports on n equals p["DeviceID"].ToString()
 						 select n + " - " + p["Caption"]).ToList();
@@ -423,6 +458,10 @@ namespace Programmator
 		private void MenuItemSelectRegion_Click(object sender, RoutedEventArgs e)
 		{
 			WindowRegion windowRegion = new WindowRegion(Device.Region);
+			bool? result = windowRegion.ShowDialog();
+			if (result != true) return;
+
+			Device.Region = windowRegion.region;
 		}
 	}
 }
