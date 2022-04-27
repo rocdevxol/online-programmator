@@ -28,6 +28,11 @@
 						<Image Source="{StaticResource SaveFile}" Width="16" Height="16"/>
 					</MenuItem.Icon>
 				</MenuItem>
+				<MenuItem x:Name="menuItemSaveFileRegion" Header="_Сохранить файл Eeprom" Click="MenuItemSaveFileRegion_Click" IsEnabled="False">
+					<MenuItem.Icon>
+						<Image Source="{StaticResource SaveFile}" Width="16" Height="16"/>
+					</MenuItem.Icon>
+				</MenuItem>
 				<Separator/>
 				<MenuItem x:Name="menuItemExit" Header="_Выход" Click="MenuItemExit_Click">
 					<MenuItem.Icon>
@@ -126,6 +131,9 @@
 					<Image Source="{StaticResource SaveFile}" Width="24" Height="24"/>
 				</Button>
 				<Button ToolTip="Сохранить файл Eeprom" Click="MenuItemSaveFileEeprom_Click" IsEnabled="{Binding IsEnabled, ElementName=menuItemSaveFileEeprom}">
+					<Image Source="{StaticResource SaveFile}" Width="24" Height="24"/>
+				</Button>
+				<Button ToolTip="Сохранить файл области" Click="MenuItemSaveFileRegion_Click" IsEnabled="{Binding IsEnabled, ElementName=menuItemSaveFileRegion}">
 					<Image Source="{StaticResource SaveFile}" Width="24" Height="24"/>
 				</Button>
 				<Separator/>

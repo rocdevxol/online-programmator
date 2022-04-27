@@ -78,6 +78,12 @@ namespace Programmator
 
 		private void UpdateForm()
 		{
+			if (Device.InfoDevice.VersionBootloader == 125)
+			{
+				menuItemUserCode.IsEnabled = true;
+				menuItemRewriteEeprom.IsEnabled = true;
+			}
+
 			switch (Device.StatusProgress)
 			{
 				case Enums.StatusProgress.Disable:
@@ -123,6 +129,7 @@ namespace Programmator
 				case Enums.StatusProgress.FinishReadRegion:
 					textBlockLength.Text = Device.RegionData.Count.ToString("X8");
 					Device.StatusProgress = Enums.StatusProgress.Finish;
+					menuItemSaveFileRegion.IsEnabled = true;
 					break;
 				case Enums.StatusProgress.FinishWriteEeprom:
 					Device.StatusProgress = Enums.StatusProgress.Finish;
@@ -133,7 +140,6 @@ namespace Programmator
 				case Enums.StatusProgress.FinishWriteRegion:
 					Device.StatusProgress = Enums.StatusProgress.Finish;
 					break;
-
 			}
 
 			switch (Messages?.GetFunction())
@@ -267,6 +273,34 @@ namespace Programmator
 			Logger.Trace("Сохранение файла EEPROM: {0} [{0:X8}]", leng);
 		}
 
+		private void MenuItemSaveFileRegion_Click(object sender, RoutedEventArgs e)
+		{
+			if (Device.RegionData == null || Device.RegionData.Count == 0)
+			{
+				_ = MessageBox.Show("Данные остутсвуют, произведите считывание данных с системы", Title, MessageBoxButton.OK, MessageBoxImage.Error);
+				return;
+			}
+			SaveFileDialog sfd = new SaveFileDialog
+			{
+				Filter = "Бинарные файлы|*.bin"
+			};
+			string name = string.Format("eeprom_{0}.bin", Device.InfoDevice.NumberMachine);
+			sfd.FileName = name;
+			bool? res = sfd.ShowDialog();
+			if (res != true)
+			{
+				return;
+			}
+
+			FileStream stream = new FileStream(sfd.FileName, FileMode.CreateNew, FileAccess.ReadWrite);
+			int leng = Device.RegionData.Count;
+			byte[] buffer = Device.RegionData.ToArray();
+			stream.Write(buffer, 0, leng);
+			stream.Close();
+
+			Logger.Trace("Сохранение файла области: {0} [{0:X8}]", leng);
+		}
+
 		private void MenuItemExit_Click(object sender, RoutedEventArgs e)
 		{
 			Close();
@@ -282,8 +316,8 @@ namespace Programmator
 
 				menuItemDisconnect.IsEnabled = true;
 				menuItemConnect.IsEnabled = false;
-				menuItemUserCode.IsEnabled = true;
-				menuItemRewriteEeprom.IsEnabled = true;
+				menuItemUserCode.IsEnabled = false;
+				menuItemRewriteEeprom.IsEnabled = false;
 				menuItemEraseFlash.IsEnabled = true;
 				menuItemReadFlash.IsEnabled = true;
 				menuItemEraseEeprom.IsEnabled = true;
